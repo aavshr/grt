@@ -8,7 +8,7 @@ from bokeh.resources import CDN
 from bokeh.embed import file_html
 from bokeh.models import HoverTool
 
-from code_reviews import rev_req_store
+from reviews import rev_req_store
 
 class Chart:
     def __init__(self):

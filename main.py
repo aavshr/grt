@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse
 
-from code_reviews import rev_req_store 
 from insights import Chart 
 
 # FastAPI app

@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse
 
-from code_reviews import rev_req_store 
+import utils
+from reviews import rev_req_store
 from insights import Chart 
 
 # FastAPI app
@@ -15,6 +16,12 @@ CACHE_MAX_AGE = 300
 
 @app.post("/webhook_events")
 async def webhook_handler(request: Request):
+    # verify webhook signature 
+    raw = await request.body()
+    signature = request.headers.get("X-Hub-Signature")
+    if signature != utils.calc_signature(raw):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
     payload = await request.json() 
 
     event_type = request.headers.get("X-Github-Event") 

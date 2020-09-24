@@ -8,7 +8,7 @@ from bokeh.resources import CDN
 from bokeh.embed import file_html
 from bokeh.models import HoverTool
 
-from code_reviews import rev_req_store
+from reviews import rev_req_store
 
 class Chart:
     def __init__(self):
@@ -65,7 +65,6 @@ class Chart:
         return average_buckets
 
     def __generate_chart(self, buckets:dict):
-        print(buckets)
         p = figure(title="Average code review turnarounds", 
                 x_axis_type="datetime",
                 x_axis_label="date",
@@ -87,5 +86,4 @@ class Chart:
         buckets = self.__get_insights(duration, period)
         for date in buckets:
             if isnan(buckets[date]): buckets[date] = 0 
-        print(buckets)
         return buckets

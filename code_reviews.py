@@ -18,7 +18,7 @@ class ReviewRequestStore:
     def __init__(self):
         self.db = Deta().Base("code_reviews")
     
-    def __get_review_req(self, pr_num, reviewer):
+    def __get_review_req(self, pr_num:int, reviewer:str):
         # generator
         review_reqs_gen = next(self.db.fetch({
             "submitted": False,
@@ -39,7 +39,7 @@ class ReviewRequestStore:
 
         return review_reqs[0]
 
-    def store(self, payload):
+    def store(self, payload:dict):
         # POSIX timestamp
         current_time = int(datetime.now(timezone.utc).timestamp())
         item = {
@@ -52,7 +52,7 @@ class ReviewRequestStore:
         # put review request
         self.db.put(item)
 
-    def mark_complete(self, payload):
+    def mark_complete(self, payload:dict):
         submission_time = int(isoparse(payload["review"]["submitted_at"]).timestamp())
 
         pr_num = payload["pull_request"]["number"]
@@ -69,9 +69,25 @@ class ReviewRequestStore:
         self.db.update(updates, review_req["key"]) 
         return
 
-    def delete(self, payload):
+    def delete(self, payload:dict):
         pr_num = payload["pull_request"]["number"]
         reviewer = payload["requested_reviewer"]["login"]
 
         review_req = self.__get_review_req(pr_num, reviewer)
         self.db.delete(review_req["key"])
+    
+    def get(self, created_since:str):
+        since = int(isoparse(created_since).timestamp())
+
+        review_reqs_since_gen = next(self.db.fetch({
+            "requested_at?gte": since,
+            "submitted": True
+        }))
+
+        review_reqs_since = []
+        for req in review_reqs_since_gen:
+            review_reqs_since.append(req)
+
+        return review_reqs_since
+
+rev_req_store = ReviewRequestStore()

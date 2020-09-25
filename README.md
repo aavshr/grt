@@ -14,7 +14,7 @@ GRT uses github webhooks to maintain a database of code review requests and subm
 
 ## API
 
-The average turnarounds can be fetched with a simple GET request. The root endpoint is different based on the deployment.
+The average turnarounds can be fetched with a simple GET request. The root endpoint is different based on the [deployment](#Deployment).
 
 ```
 GET /turnarounds/?last={last}&period={period}&plot={plot}
@@ -32,11 +32,11 @@ For eg. `GET /turnarounds/?last=week&period=day&plot=true` provides you an html 
 
 - If `plot` is `true` returns an html chart of the average turnarounds.
 
-- If `plot` is `false` returns a json response with dates as keys and corresponding average turnarounds in minutes. An example response of `GET /turnarounds/?plot=false` request:
+- If `plot` is `false` returns a json response with dates as keys and corresponding average turnarounds in minutes. A value of `0` denotes no code reviews were completed in that period. An example response of `GET /turnarounds/?plot=false` request:
 
 ```json
 {
-  "2020-09-18T09:00:22": 0, // 0 denotes no code reviews were completed in that period
+  "2020-09-18T09:00:22": 0, 
   "2020-09-19T09:00:22": 454.88,
   "2020-09-20T09:00:22": 1315.75,
   "2020-09-21T09:00:22": 87.13,
@@ -55,7 +55,7 @@ For eg. `GET /turnarounds/?last=week&period=day&plot=true` provides you an html 
 
 *GRT* is deployed on [Deta micros](https://docs.deta.sh/docs/micros/about). It uses [Deta Base](https://docs.deta.sh/docs/base/about) for storing information about the reviews.
 
-The following instructions are valid only for deploying to a Deta Micro. If you need to deploy to a different cloud platform or need a different database, please refer to the corresponding platforms deployment process or database setup.
+The following instructions are valid only for deploying to a Deta Micro. If you need to deploy to a different cloud platform or need a different database, please refer to the corresponding platform's deployment process or database setup.
 
 ### Clone the repository
 
@@ -105,7 +105,7 @@ We will use a webhook secret to verify that the events are coming from github on
 
 - Change the `Content type` to `application/json`
 
-- Generate a long secure random string (there are services online that do this) and use that as the *Webhook Secret*. Keep hold of this secret as you will need it to (set up the app's environment)[#Set-up-the-enviroment] later.
+- Generate a long secure random string (there are services online that do this) and use that as the *Webhook Secret*. Keep hold of this secret as you will need it to [set up the app's environment](#Set-up-the-enviroment) later.
 
 - Select `Let me select individual events` when selecting the events to trigger the webhook. Select the following events:
     - `Pull requests` : To know when a code review is requested

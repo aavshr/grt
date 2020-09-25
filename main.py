@@ -22,10 +22,11 @@ async def webhook_handler(request: Request):
     if signature != utils.calc_signature(raw):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
+    # handle events    
     payload = await request.json() 
-
     event_type = request.headers.get("X-Github-Event") 
 
+    # reviews requested or removed
     if event_type == "pull_request": 
         action = payload.get("action")
         if action == "review_requested":
@@ -34,6 +35,7 @@ async def webhook_handler(request: Request):
             rev_req_store.delete(payload)
         return "ok"
 
+    # review submitted
     if event_type == "pull_request_review" and payload.get("action") == "submitted":
         rev_req_store.mark_complete(payload)
         return "ok"
@@ -41,6 +43,10 @@ async def webhook_handler(request: Request):
     #ignore other events
     return "ok"
 
+# get average turnaround insights
+# last: for last 'x', 'x' is only one of 'week' or 'month' currently 
+# period: 'period to calculate average of, currently 'day' or 'week'
+# plot: whether to generate a plot or not, returns json if plot is False
 @app.get("/turnarounds/")
 def get_turnarounds(last:str="week", period:str="day", plot:bool=True):
     try: 

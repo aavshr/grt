@@ -6,18 +6,20 @@ from deta import Deta
 {
     key: str, // randomly_generated
     reviewer: str, // reviewer
-    pull_request: int, // pull request 
-    requested_at : int, // timestamp of request
-    submitted_at : int, // timestamp of review submission
-    submitted: bool, // wethere the review has been submitted
+    pull_request: int, // pull request number 
+    requested_at : int, // posix timestamp of request
+    submitted_at : int, // posix timestamp of review submission
+    submitted: bool, // if the review has been submitted
     crt: int // code review turnaround
 }
 """
 
+# manages storing, fetching and updating review requests information
 class ReviewRequestStore:
     def __init__(self):
         self.db = Deta().Base("code_reviews")
     
+    # get review req from pull request number and reviewer
     def __get_review_req(self, pr_num:int, reviewer:str):
         # generator
         review_reqs_gen = next(self.db.fetch({
@@ -39,6 +41,7 @@ class ReviewRequestStore:
 
         return review_reqs[0]
 
+    # store review request
     def store(self, payload:dict):
         # POSIX timestamp
         current_time = int(datetime.now(timezone.utc).timestamp())
@@ -49,9 +52,9 @@ class ReviewRequestStore:
             "submitted": False
         }
 
-        # put review request
         self.db.put(item)
 
+    # mark review request complete
     def mark_complete(self, payload:dict):
         submission_time = int(isoparse(payload["review"]["submitted_at"]).timestamp())
 
@@ -69,6 +72,7 @@ class ReviewRequestStore:
         self.db.update(updates, review_req["key"]) 
         return
 
+    # delete review request
     def delete(self, payload:dict):
         pr_num = payload["pull_request"]["number"]
         reviewer = payload["requested_reviewer"]["login"]
@@ -76,6 +80,7 @@ class ReviewRequestStore:
         review_req = self.__get_review_req(pr_num, reviewer)
         self.db.delete(review_req["key"])
     
+    # get review requests created since date
     def get(self, created_since:str):
         since = int(isoparse(created_since).timestamp())
 

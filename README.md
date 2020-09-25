@@ -105,7 +105,7 @@ We will use a webhook secret to verify that the events are coming from github on
 
 - Change the `Content type` to `application/json`
 
-- Generate a long secure random string (there are services online that do this) and use that as the *Webhook Secret*. Keep hold of this secret as you will need it to [set up the app's environment](#Set-up-the-enviroment) later.
+- Generate a long secure random string (there are services online that do this) and use that as the *Webhook Secret*. Keep hold of this secret as you will need it to [set up the app's environment](#Set-up-the-environment) later.
 
 - Select `Let me select individual events` when selecting the events to trigger the webhook. Select the following events:
     - `Pull requests` : To know when a code review is requested

@@ -12,6 +12,19 @@ GRT uses github webhooks to maintain a database of code review requests and subm
 
 ![sample_plot](assets/sample_plot.png)
 
+```json
+{
+  "2020-09-18T09:00:22": 0, 
+  "2020-09-19T09:00:22": 454.88,
+  "2020-09-20T09:00:22": 1315.75,
+  "2020-09-21T09:00:22": 87.13,
+  "2020-09-22T09:00:22": 178.05,
+  "2020-09-23T09:00:22": 95.83,
+  "2020-09-24T09:00:22": 40.7,
+  "2020-09-25T09:00:22": 0
+}
+```
+
 ## API
 
 The average turnarounds can be fetched with a simple GET request. The root endpoint is different based on the [deployment](#Deployment).
@@ -32,20 +45,7 @@ For eg. `GET /turnarounds/?last=week&period=day&plot=true` provides you an html 
 
 - If `plot` is `true` returns an html chart of the average turnarounds.
 
-- If `plot` is `false` returns a json response with dates as keys and corresponding average turnarounds in minutes. A value of `0` denotes no code reviews were completed in that period. An example response of `GET /turnarounds/?plot=false` request:
-
-```json
-{
-  "2020-09-18T09:00:22": 0, 
-  "2020-09-19T09:00:22": 454.88,
-  "2020-09-20T09:00:22": 1315.75,
-  "2020-09-21T09:00:22": 87.13,
-  "2020-09-22T09:00:22": 178.05,
-  "2020-09-23T09:00:22": 95.83,
-  "2020-09-24T09:00:22": 40.7,
-  "2020-09-25T09:00:22": 0
-}
-```
+- If `plot` is `false` returns a json response with dates as keys and corresponding average turnarounds in minutes. A value of `0` denotes no code reviews were completed in that period.
 
 ### Client Errors
 
